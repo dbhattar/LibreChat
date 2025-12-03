@@ -8,11 +8,26 @@ import { ApiErrorBoundaryProvider } from './hooks/ApiErrorBoundaryContext';
 import 'katex/dist/katex.min.css';
 import 'katex/dist/contrib/copy-tex.js';
 
+async function prepare() {
+  // Enable MSW mocking in development if VITE_USE_MOCKS is set
+  if (import.meta.env.DEV && import.meta.env.VITE_USE_MOCKS === 'true') {
+    const { worker } = await import('./mocks/browser');
+    return worker.start({
+      onUnhandledRequest: 'bypass',
+      quiet: false,
+    });
+  }
+  return Promise.resolve();
+}
+
 const container = document.getElementById('root');
 const root = createRoot(container);
 
-root.render(
-  <ApiErrorBoundaryProvider>
-    <App />
-  </ApiErrorBoundaryProvider>,
-);
+prepare().then(() => {
+  root.render(
+    <ApiErrorBoundaryProvider>
+      <App />
+    </ApiErrorBoundaryProvider>,
+  );
+});
+

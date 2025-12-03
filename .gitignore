@@ -4,8 +4,10 @@
 data-node
 meili_data*
 data/
+!client/src/mocks/data
 logs
 *.log
+client/public/mockServiceWorker.js
 
 # Runtime data
 pids
